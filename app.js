@@ -5,7 +5,7 @@ var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
 var authorizeButton = document.getElementById('authorize_button');
 var signoutButton = document.getElementById('signout_button');
-
+var content = document.getElementById('content');
 
 function handleClientLoad() {
     gapi.load('client:auth2', initClient);
@@ -13,6 +13,7 @@ function handleClientLoad() {
 document.addEventListener("DOMContentLoaded", function() {
     handleClientLoad();
 });
+
 function initClient() {
     gapi.client.init({
         apiKey: API_KEY,
@@ -31,9 +32,13 @@ function initClient() {
 
 function updateSigninStatus(isSignedIn) {
     if (isSignedIn) {
+        authorizeButton.style.display = 'none';
+        signoutButton.style.display = 'block';
         listMajors();
     } else {
-        console.log("Please log in to the application.");
+        authorizeButton.style.display = 'block';
+        signoutButton.style.display = 'none';
+        appendPre("Please log in to the application.");
     }
 }
 
@@ -53,7 +58,7 @@ function listMajors() {
         var range = response.result;
         if (range.values.length > 0) {
             appendPre('Name, Major:');
-            for (i = 0; i < range.values.length; i++) {
+            for (var i = 0; i < range.values.length; i++) {
                 var row = range.values[i];
                 appendPre(row[0] + ', ' + row[4]);
             }
@@ -79,11 +84,10 @@ function updateSheet() {
          resource: body
     }).then(function(response) {
         var result = response.result;
-        console.log(`${result.updatedCells} cells updated.`);
+        appendPre(`${result.updatedCells} cells updated.`);
     });
 }
 
 function appendPre(message) {
-    var pre = document.getElementById('content');
-    pre.innerHTML += message + '\n';
+    content.innerHTML += message + '\n';
 }
