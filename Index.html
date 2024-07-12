@@ -49,15 +49,16 @@
         const API_KEY = 'AIzaSyBhMEs1BDB8efd0MVRtv4u6J8QpILxgqmU';
         const SHEET_ID = '1tzyxVXDZyk7FQtYm8nFYskisu5gdAf2QoV3SoDCzIRY';
         const RANGE = 'PNK!A1:H';
+        let accessToken;
 
         function handleCredentialResponse(response) {
-            const token = response.credential;
+            accessToken = response.credential;
             gapi.load('client', () => {
                 gapi.client.init({
                     apiKey: API_KEY,
                     discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
                 }).then(() => {
-                    gapi.auth.setToken({access_token: token});
+                    gapi.client.setToken({access_token: accessToken});
                     console.log('GAPI client loaded for API');
                 }, (error) => {
                     console.error('Error loading GAPI client for API', error);
@@ -81,6 +82,8 @@
             gapi.client.sheets.spreadsheets.values.append(params, valueRangeBody).then((response) => {
                 console.log(response);
                 viewData(); // Cập nhật dữ liệu sau khi thêm
+            }, (error) => {
+                console.error('Error adding data: ', error);
             });
         }
 
@@ -110,6 +113,8 @@
                 } else {
                     document.getElementById('data-view').innerHTML = 'No data found.';
                 }
+            }, (error) => {
+                console.error('Error viewing data: ', error);
             });
         }
 
