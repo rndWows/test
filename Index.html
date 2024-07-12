@@ -106,7 +106,7 @@
             try {
                 const response = await gapi.client.sheets.spreadsheets.values.get({
                     spreadsheetId: '1tzyxVXDZyk7FQtYm8nFYskisu5gdAf2QoV3SoDCzIRY',
-                    range: 'PNX!A2:H',
+                    range: 'PNX!A4:H',
                 });
                 const range = response.result;
                 if (!range || !range.values || range.values.length == 0) {
