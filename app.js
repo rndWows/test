@@ -1,6 +1,7 @@
 var CLIENT_ID = '36866534114-quffe9ok3s05kab59mfuvt0s4a7eqqer.apps.googleusercontent.com';
 var API_KEY = 'AIzaSyBIYrumhRpzcwz8E8FToH-dMoGfYFYQz90';
 var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+
 var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
 var authorizeButton = document.getElementById('authorize_button');
@@ -8,11 +9,8 @@ var signoutButton = document.getElementById('signout_button');
 var content = document.getElementById('content');
 
 function handleClientLoad() {
-    gapi.load('client:auth2', initClient);
+    gapi.load('client:auth2', initClient); // Tải và khởi tạo thư viện
 }
-document.addEventListener("DOMContentLoaded", function() {
-    handleClientLoad();
-});
 
 function initClient() {
     gapi.client.init({
@@ -26,9 +24,10 @@ function initClient() {
         authorizeButton.onclick = handleAuthClick;
         signoutButton.onclick = handleSignoutClick;
     }, function(error) {
-        appendPre(JSON.stringify(error, null, 2));
+        console.error("Error loading GAPI client for API", error);
     });
 }
+
 
 function updateSigninStatus(isSignedIn) {
     if (isSignedIn) {
