@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Sheets API Quickstart</title>
+    <title>Sheets API Full Example</title>
     <meta charset="utf-8" />
   </head>
   <body>
-    <p>Sheets API Quickstart</p>
-
+    <p>Google Sheets API Example</p>
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
     <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+    <button onclick="updateData()">Update Data</button>
 
     <pre id="content" style="white-space: pre-wrap;"></pre>
 
@@ -28,7 +28,7 @@
 
       // Authorization scopes required by the API; multiple scopes can be
       // included, separated by spaces.
-      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
       let tokenClient;
       let gapiInited = false;
@@ -123,7 +123,7 @@
       async function listMajors() {
         let response;
         try {
-          // Fetch first 10 files
+          // Fetch data
           response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: '1tzyxVXDZyk7FQtYm8nFYskisu5gdAf2QoV3SoDCzIRY',
             range: 'PNK!A1:D5',
@@ -142,6 +142,31 @@
             (str, row) => `${str}${row[0]}, ${row[4]}\n`,
             'Name, Major:\n');
         document.getElementById('content').innerText = output;
+      }
+
+      /**
+       * Update data in the Google Sheet.
+       */
+      async function updateData() {
+        const values = [
+            ["Updated Value"]
+        ]; // Update these values based on your needs
+        const body = {
+            values: values
+        };
+        try {
+            const response = await gapi.client.sheets.spreadsheets.values.update({
+                spreadsheetId: '1tzyxVXDZyk7FQtYm8nFYskisu5gdAf2QoV3SoDCzIRY',
+                range: 'PNK!A2', // Update this range as needed
+                valueInputOption: 'USER_ENTERED',
+                resource: body
+            });
+            console.log('Update successful', response.result);
+            document.getElementById('content').innerText = 'Update successful: ' + JSON.stringify(response.result);
+        } catch (err) {
+            console.error('Failed to update data', err);
+            document.getElementById('content').innerText = 'Error: ' + err.message;
+        }
       }
     </script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
